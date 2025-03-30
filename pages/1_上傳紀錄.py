@@ -4,7 +4,7 @@ import requests
 import base64
 from common import upload_file_to_gcs, load_records, save_records, remove_record_by_date
 
-# ---------------- 密碼鎖 ----------------
+# ---------------- 密碼鎖 ---------------
 # 每次進入頁面時重置驗證狀態
 st.session_state.authenticated = False
 
