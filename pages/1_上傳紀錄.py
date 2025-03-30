@@ -115,9 +115,9 @@ if submit_daily:
         password_input = st.text_input("請輸入上傳密碼", type="password", key="upload_password")
         password_submit = st.form_submit_button("確認上傳")
     if password_submit:
-        print("11111111111111")
+        st.write("密碼表單已提交")
         if password_input == "admindin":
-            print("22222222222222")
+            st.write("密碼正確")
             duplicate_index = None
             for i, rec in enumerate(st.session_state.daily_records):
                 if rec["date"].date() == record_date:
