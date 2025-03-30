@@ -118,9 +118,8 @@ if "pending_record" in st.session_state:
         password_input = st.text_input("請輸入上傳密碼", type="password", key="upload_password")
         password_submit = st.form_submit_button("確認上傳")
     if password_submit:
-        st.write("密碼已輸入")  # 除錯用
         if password_input == UPLOAD_PASSWORD:
-            st.write("密碼正確")  # 除錯用
+            st.success("密碼正確")  # 除錯用
             record_date = st.session_state.pending_record["date"].date()
             duplicate_index = None
             for i, rec in enumerate(st.session_state.daily_records):
