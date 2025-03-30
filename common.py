@@ -4,7 +4,7 @@ import datetime
 import pandas as pd
 from google.cloud import storage
 
-# 嘗試從 st.secrets 中讀取憑證內容（僅在 Streamlit Cloud 環境中有效）
+# 從st.secrets讀取憑證
 try:
     import streamlit as st
     if "GCP_CREDENTIALS" in st.secrets:
@@ -17,11 +17,9 @@ try:
 except Exception as e:
     print("Error reading st.secrets:", e)
 
-    # 如果沒在 Streamlit Cloud 環境，你可以考慮手動設定本地憑證路徑
-    # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./plasma-ember-455214-u6-bb5d400b1bf5.json"
 
 DATA_FILE = "daily_records.csv"
-BUCKET_NAME = "internet_health"  # 請替換成你的 Bucket 名稱
+BUCKET_NAME = "internet_health"
 
 client = storage.Client()
 bucket = client.bucket(BUCKET_NAME)
@@ -29,7 +27,7 @@ bucket = client.bucket(BUCKET_NAME)
 def upload_file_to_gcs(uploaded_file, record_date, category):
     """
     將上傳的檔案上傳到 GCS，並以格式：YYYYMMDD_category_UUID.ext 重新命名，
-    回傳該檔案的公眾 URL。
+    回傳該檔案的public URL。
     """
     if uploaded_file is not None:
         ext = os.path.splitext(uploaded_file.name)[1]

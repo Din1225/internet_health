@@ -11,7 +11,7 @@ def get_base64_from_url(url):
     else:
         return None
 
-# 替換為你在 GCS 上的公開圖片 URL
+# 背景圖片
 bg_url = "https://storage.googleapis.com/internet_health/upload_bg3.jpg"
 bg_image_base64 = get_base64_from_url(bg_url)
 
@@ -30,7 +30,7 @@ if bg_image_base64:
 else:
     st.error("背景圖片載入失敗。")
 
-# 調整 margin-top 到 150px 讓標題往下移
+# 標題的位置
 st.markdown(
     """
     <div style="display: flex; justify-content: center; margin-top: 300px;">

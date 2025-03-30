@@ -4,10 +4,10 @@ import requests
 import base64
 from common import upload_file_to_gcs, load_records, save_records, remove_record_by_date
 
-# 設定頁面為寬版
+# 設定頁面為wide
 st.set_page_config(page_title="上傳紀錄", layout="wide")
 
-# ---------------- 自訂背景圖片 ----------------
+# 背景圖片
 def get_base64_from_url(url):
     response = requests.get(url)   
     if response.status_code == 200:
@@ -15,11 +15,9 @@ def get_base64_from_url(url):
     else:
         return None
 
-# 替換為你在 GCS 上背景圖片的公開連結
 bg_url = "https://storage.googleapis.com/internet_health/upload_bg3.jpg"
 bg_image_base64 = get_base64_from_url(bg_url)
 
-# 如果成功取得 base64，設定整個頁面的背景
 if bg_image_base64:
     st.markdown(
         f"""
@@ -35,32 +33,28 @@ if bg_image_base64:
 else:
     st.error("背景圖片載入失敗。")
 
+
+
 st.title("上傳紀錄")
 
-# 確保 daily_records 初始化
+# 初始daily_records
 st.session_state.setdefault("daily_records", load_records())
 
 # 這裡直接建立表單，不再使用 .form-container 包覆
 with st.form("daily_form", clear_on_submit=True):
     record_date = st.date_input("紀錄日期", datetime.date.today())
-    
-    # 手動輸入上床時間
     st.markdown("#### 上床時間")
     col1, col2, col3, col4 = st.columns([1, 0.3, 1, 0.3])
     bed_hour = col1.number_input("時", min_value=0, max_value=23, value=23, step=1, format="%d")
     bed_minute = col3.number_input("分", min_value=0, max_value=59, value=0, step=1, format="%d")
     bed_time = datetime.time(bed_hour, bed_minute)
-    
-    # 手動輸入起床時間
     st.markdown("#### 起床時間")
     col5, col6, col7, col8 = st.columns([1, 0.3, 1, 0.3])
     wake_hour = col5.number_input("時", min_value=0, max_value=23, value=7, step=1, format="%d", key="wake_hour")
     wake_minute = col7.number_input("分", min_value=0, max_value=59, value=0, step=1, format="%d", key="wake_minute")
     wake_time = datetime.time(wake_hour, wake_minute)
     
-    
-    
-    # 統一存入 CSV 時格式一致（固定時間 00:00:00）
+    # 存入CSV時，統一格式 (00:00:00)
     record_datetime = datetime.datetime.combine(record_date, datetime.time(0, 0))
     
     # 計算睡眠時數
@@ -69,10 +63,8 @@ with st.form("daily_form", clear_on_submit=True):
     if wake_datetime <= bed_datetime:
         wake_datetime += datetime.timedelta(days=1)
     sleep_hours = round((wake_datetime - bed_datetime).total_seconds() / 3600.0, 1)
-    
-    # 上傳圖片與輸入其他數據
-    sleep_evidence = st.file_uploader("上傳睡眠證明照片", type=["png", "jpg", "jpeg"], key="sleep_evidence")
 
+    sleep_evidence = st.file_uploader("上傳睡眠證明照片", type=["png", "jpg", "jpeg"], key="sleep_evidence")
     # 螢幕使用時間與證明圖片
     st.markdown("#### 螢幕使用")
     col_screen1, col_screen2 = st.columns([2, 3])
@@ -82,23 +74,19 @@ with st.form("daily_form", clear_on_submit=True):
     
     
     st.write("請上傳餐點照片與輸入食物描述：")
-    # 早餐：圖片與描述
     breakfast_desc = st.text_input("早餐食物描述", key="breakfast_desc")
     breakfast_img = st.file_uploader("早餐照片", type=["png", "jpg", "jpeg"], key="breakfast")
-    
-    # 午餐：圖片與描述
     lunch_desc = st.text_input("午餐食物描述", key="lunch_desc")
     lunch_img = st.file_uploader("午餐照片", type=["png", "jpg", "jpeg"], key="lunch")
-    
-    # 晚餐：圖片與描述
     dinner_desc = st.text_input("晚餐食物描述", key="dinner_desc")
     dinner_img = st.file_uploader("晚餐照片", type=["png", "jpg", "jpeg"], key="dinner")
-    
     sugary_drinks = st.number_input("當天含糖飲料數量", min_value=0, step=1, value=0, help="請輸入當天喝的含糖飲料數量")
     steps = st.number_input("今日步數", min_value=0, step=100, value=0)
     steps_evidence = st.file_uploader("上傳步數證明照片", type=["png", "jpg", "jpeg"], key="steps_evidence")
     reflection = st.text_area("每日反思", help="請記錄今天的心情、心得或學到的事")
     
+
+
     submit_daily = st.form_submit_button("提交每日紀錄")
 
 if submit_daily:
