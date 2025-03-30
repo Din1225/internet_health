@@ -3,6 +3,7 @@ import streamlit as st
 import requests
 import base64
 from common import upload_file_to_gcs, load_records, save_records, remove_record_by_date
+import os
 
 st.set_page_config(page_title="上傳紀錄", layout="wide")
 
@@ -108,6 +109,9 @@ if submit_daily:
     st.info("請輸入上傳密碼以確認上傳資料。")
 
 
+# 從環境變數中取得密碼
+UPLOAD_PASSWORD = os.getenv("UPLOAD_PASSWORD")
+
 # 如果 pending_record 已存在，則顯示密碼表單
 if "pending_record" in st.session_state:
     st.info("請輸入上傳密碼以確認上傳資料。")
@@ -116,7 +120,7 @@ if "pending_record" in st.session_state:
         password_submit = st.form_submit_button("確認上傳")
     if password_submit:
         st.write("密碼已輸入")  # 除錯用
-        if password_input == "admindin":
+        if password_input == UPLOAD_PASSWORD:
             st.write("密碼正確")  # 除錯用
             record_date = st.session_state.pending_record["date"].date()
             duplicate_index = None
