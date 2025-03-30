@@ -5,10 +5,10 @@ import base64
 from common import upload_file_to_gcs, load_records, save_records, remove_record_by_date
 
 # ---------------- 密碼鎖 ----------------
-PASSWORD = "admindin"  # 替換成你的密碼
+# 每次進入頁面時重置驗證狀態
+st.session_state.authenticated = False
 
-if "authenticated" not in st.session_state:
-    st.session_state.authenticated = False
+PASSWORD = "admindin"  # 替換成你的密碼
 
 if not st.session_state.authenticated:
     password_input = st.text_input("請輸入密碼", type="password")
@@ -20,6 +20,8 @@ if not st.session_state.authenticated:
         else:
             st.error("密碼錯誤")
     st.stop()
+
+st.write("進入上傳紀錄頁面...")
 
 # 設定頁面為wide
 st.set_page_config(page_title="上傳紀錄", layout="wide")
