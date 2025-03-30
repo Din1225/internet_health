@@ -8,7 +8,7 @@ from google.cloud import storage
 try:
     import streamlit as st
     if "GCP_CREDENTIALS" in st.secrets:
-        # 將憑證內容寫入 /tmp/credentials.json
+        print("成功讀取 st.secrets 中的 GCP_CREDENTIALS")
         with open("/tmp/credentials.json", "w") as f:
             f.write(st.secrets["GCP_CREDENTIALS"])
         os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/tmp/credentials.json"
@@ -16,6 +16,7 @@ try:
         print("GCP_CREDENTIALS 不存在於 st.secrets 中。")
 except Exception as e:
     print("Error reading st.secrets:", e)
+
     # 如果沒在 Streamlit Cloud 環境，你可以考慮手動設定本地憑證路徑
     # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./plasma-ember-455214-u6-bb5d400b1bf5.json"
 
