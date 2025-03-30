@@ -7,16 +7,17 @@ from google.cloud import storage
 # 嘗試從 st.secrets 中讀取憑證內容（僅在 Streamlit Cloud 環境中有效）
 try:
     import streamlit as st
-    if "GOOGLE_APPLICATION_CREDENTIALS" not in os.environ:
-        if "GCP_CREDENTIALS" in st.secrets:
-            print("Found GCP_CREDENTIALS in st.secrets")
-            with open("/tmp/credentials.json", "w") as f:
-                f.write(st.secrets["GCP_CREDENTIALS"])
-            os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/tmp/credentials.json"
-        else:
-            print("GCP_CREDENTIALS not found in st.secrets")
+    if "GCP_CREDENTIALS" in st.secrets:
+        # 將憑證內容寫入 /tmp/credentials.json
+        with open("/tmp/credentials.json", "w") as f:
+            f.write(st.secrets["GCP_CREDENTIALS"])
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/tmp/credentials.json"
+    else:
+        print("GCP_CREDENTIALS 不存在於 st.secrets 中。")
 except Exception as e:
     print("Error reading st.secrets:", e)
+    # 如果沒在 Streamlit Cloud 環境，你可以考慮手動設定本地憑證路徑
+    # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./plasma-ember-455214-u6-bb5d400b1bf5.json"
 
 DATA_FILE = "daily_records.csv"
 BUCKET_NAME = "internet_health"  # 請替換成你的 Bucket 名稱
