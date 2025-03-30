@@ -1,0 +1,7 @@
+date,sleep_hours,sleep_evidence,breakfast,lunch,dinner,sugary_drinks,steps,steps_evidence,reflection,breakfast_desc,lunch_desc,dinner_desc,screen_time,screen_evidence
+2025-03-29,8.5,,,,,1,0,,,,,,,
+2025-03-31,6.5,,,,,1,100,,134241,,,,,
+2025-03-27,8.0,,,,,1,300,,9090909,,,,,
+2025-03-28,8.0,,,,,0,0,,,,,,0.0,
+2025-03-26,8.0,,,,,0,0,,,,火鍋,,0.0,
+2025-03-30,8.0,,,,,0,0,,KOJH,,,,0.0,
