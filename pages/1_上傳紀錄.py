@@ -18,7 +18,6 @@ if not st.session_state.authenticated:
             st.success("密碼正確，歡迎進入！")
         else:
             st.error("密碼錯誤")
-    st.stop()
 
 st.write("進入上傳紀錄頁面...")
 
