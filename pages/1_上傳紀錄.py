@@ -34,7 +34,7 @@ def get_base64_from_url(url):
     else:
         return None
 
-bg_url = "https://storage.googleapis.com/internet_health/upload_bg3.jpg"
+bg_url = "https://storage.googleapis.com/internet_health/background.jpg"
 bg_image_base64 = get_base64_from_url(bg_url)
 
 if bg_image_base64:
@@ -54,7 +54,7 @@ else:
 
 
 
-st.title("上傳紀錄111111111")
+st.title("上傳紀錄")
 
 # 初始daily_records
 st.session_state.setdefault("daily_records", load_records())
