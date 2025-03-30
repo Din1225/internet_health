@@ -9,12 +9,14 @@ try:
     import streamlit as st
     if "GOOGLE_APPLICATION_CREDENTIALS" not in os.environ:
         if "GCP_CREDENTIALS" in st.secrets:
+            print("Found GCP_CREDENTIALS in st.secrets")
             with open("/tmp/credentials.json", "w") as f:
                 f.write(st.secrets["GCP_CREDENTIALS"])
             os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/tmp/credentials.json"
+        else:
+            print("GCP_CREDENTIALS not found in st.secrets")
 except Exception as e:
-    # 若無法讀取 st.secrets，則保持原有設定
-    pass
+    print("Error reading st.secrets:", e)
 
 DATA_FILE = "daily_records.csv"
 BUCKET_NAME = "internet_health"  # 請替換成你的 Bucket 名稱
