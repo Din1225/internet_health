@@ -114,7 +114,6 @@ UPLOAD_PASSWORD = os.getenv("UPLOAD_PASSWORD")
 
 # 如果 pending_record 已存在，則顯示密碼表單
 if "pending_record" in st.session_state:
-    st.info("請輸入上傳密碼以確認上傳資料。")
     with st.form("password_form"):
         password_input = st.text_input("請輸入上傳密碼", type="password", key="upload_password")
         password_submit = st.form_submit_button("確認上傳")
