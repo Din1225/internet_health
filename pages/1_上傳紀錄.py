@@ -15,7 +15,7 @@ def get_base64_from_url(url):
     else:
         return None
 
-bg_url = "https://storage.googleapis.com/internet_health/upload_bg3.jpg"
+bg_url = "https://storage.googleapis.com/internet_health/upload_bg2.jpg"
 bg_image_base64 = get_base64_from_url(bg_url)
 
 if bg_image_base64:
