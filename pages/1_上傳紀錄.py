@@ -36,45 +36,6 @@ st.title("上傳紀錄")
 # 初始化 daily_records
 st.session_state.setdefault("daily_records", load_records())
 
-# 如果 pending_record 已存在，則顯示密碼表單
-if "pending_record" in st.session_state:
-    st.info("請輸入上傳密碼以確認上傳資料。")
-    with st.form("password_form"):
-        password_input = st.text_input("請輸入上傳密碼", type="password", key="upload_password")
-        password_submit = st.form_submit_button("確認上傳")
-    if password_submit:
-        st.write("密碼表單已提交")  # 除錯用
-        if password_input == "admindin":
-            st.write("密碼正確")  # 除錯用
-            record_date = st.session_state.pending_record["date"].date()
-            duplicate_index = None
-            for i, rec in enumerate(st.session_state.daily_records):
-                if rec["date"].date() == record_date:
-                    duplicate_index = i
-                    break
-            if duplicate_index is not None:
-                st.warning("該日期已有紀錄。將覆蓋舊紀錄。")
-                updated_records = remove_record_by_date(record_date, st.session_state.daily_records)
-                if updated_records is not None:
-                    st.session_state.daily_records = updated_records
-                    st.session_state.daily_records.append(st.session_state.pending_record)
-                    if save_records(st.session_state.daily_records):
-                        st.success("現有紀錄已被覆蓋！")
-                    else:
-                        st.error("儲存資料失敗。")
-                else:
-                    st.error("移除舊紀錄失敗。")
-            else:
-                st.session_state.daily_records.append(st.session_state.pending_record)
-                if save_records(st.session_state.daily_records):
-                    st.success("每日紀錄已提交，且圖片已上傳至 GCS！")
-                else:
-                    st.error("儲存資料失敗。")
-            # 清除 pending_record 以便未來重新提交
-            del st.session_state.pending_record
-        else:
-            st.error("密碼錯誤，請重試。")
-    st.stop()  # 當密碼表單呈現時，停止其他代碼執行
 
 # 若沒有 pending_record（也就是第一次提交表單），則顯示資料輸入表單
 with st.form("daily_form", clear_on_submit=True):
@@ -145,3 +106,44 @@ if submit_daily:
     }
     st.session_state.pending_record = new_record
     st.info("請輸入上傳密碼以確認上傳資料。")
+
+
+# 如果 pending_record 已存在，則顯示密碼表單
+if "pending_record" in st.session_state:
+    st.info("請輸入上傳密碼以確認上傳資料。")
+    with st.form("password_form"):
+        password_input = st.text_input("請輸入上傳密碼", type="password", key="upload_password")
+        password_submit = st.form_submit_button("確認上傳")
+    if password_submit:
+        st.write("密碼已輸入")  # 除錯用
+        if password_input == "admindin":
+            st.write("密碼正確")  # 除錯用
+            record_date = st.session_state.pending_record["date"].date()
+            duplicate_index = None
+            for i, rec in enumerate(st.session_state.daily_records):
+                if rec["date"].date() == record_date:
+                    duplicate_index = i
+                    break
+            if duplicate_index is not None:
+                st.warning("該日期已有紀錄。將覆蓋舊紀錄。")
+                updated_records = remove_record_by_date(record_date, st.session_state.daily_records)
+                if updated_records is not None:
+                    st.session_state.daily_records = updated_records
+                    st.session_state.daily_records.append(st.session_state.pending_record)
+                    if save_records(st.session_state.daily_records):
+                        st.success("現有紀錄已被覆蓋！")
+                    else:
+                        st.error("儲存資料失敗。")
+                else:
+                    st.error("移除舊紀錄失敗。")
+            else:
+                st.session_state.daily_records.append(st.session_state.pending_record)
+                if save_records(st.session_state.daily_records):
+                    st.success("每日紀錄已提交，且圖片已上傳至 GCS！")
+                else:
+                    st.error("儲存資料失敗。")
+            # 清除 pending_record 以便未來重新提交
+            del st.session_state.pending_record
+        else:
+            st.error("密碼錯誤，請重試。")
+    st.stop()  # 當密碼表單呈現時，停止其他代碼執行
