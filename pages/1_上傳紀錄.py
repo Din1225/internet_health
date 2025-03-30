@@ -16,7 +16,6 @@ if not st.session_state.authenticated:
         if password_input == PASSWORD:
             st.session_state.authenticated = True
             st.success("密碼正確，歡迎進入！")
-            st.experimental_rerun()
         else:
             st.error("密碼錯誤")
     st.stop()
