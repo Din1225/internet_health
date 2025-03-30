@@ -3,12 +3,12 @@ import uuid
 import datetime
 import pandas as pd
 from google.cloud import storage
+from io import StringIO
 
-# 從st.secrets讀取憑證
+# 先嘗試從 st.secrets 中讀取憑證內容
 try:
     import streamlit as st
     if "GCP_CREDENTIALS" in st.secrets:
-        print("成功讀取 st.secrets 中的 GCP_CREDENTIALS")
         with open("/tmp/credentials.json", "w") as f:
             f.write(st.secrets["GCP_CREDENTIALS"])
         os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/tmp/credentials.json"
@@ -17,9 +17,8 @@ try:
 except Exception as e:
     print("Error reading st.secrets:", e)
 
-
 DATA_FILE = "daily_records.csv"
-BUCKET_NAME = "internet_health"
+BUCKET_NAME = "internet_health"  # 請替換成你的 Bucket 名稱
 
 client = storage.Client()
 bucket = client.bucket(BUCKET_NAME)
@@ -27,7 +26,7 @@ bucket = client.bucket(BUCKET_NAME)
 def upload_file_to_gcs(uploaded_file, record_date, category):
     """
     將上傳的檔案上傳到 GCS，並以格式：YYYYMMDD_category_UUID.ext 重新命名，
-    回傳該檔案的public URL。
+    回傳該檔案的公眾 URL。
     """
     if uploaded_file is not None:
         ext = os.path.splitext(uploaded_file.name)[1]
@@ -38,19 +37,32 @@ def upload_file_to_gcs(uploaded_file, record_date, category):
     return ""
 
 def load_records():
-    if os.path.exists(DATA_FILE):
+    """
+    從 Google Cloud Storage 讀取 daily_records.csv，並返回 list of dicts。
+    如果檔案不存在，回傳空列表。
+    """
+    blob = bucket.blob(DATA_FILE)
+    if blob.exists():
         try:
-            df = pd.read_csv(DATA_FILE, parse_dates=["date"])
+            csv_data = blob.download_as_text()
+            df = pd.read_csv(StringIO(csv_data), parse_dates=["date"])
             return df.to_dict(orient="records")
         except Exception as e:
             print("Error loading records:", e)
             return []
-    return []
+    else:
+        return []
 
 def save_records(records):
+    """
+    將紀錄 list 儲存為 CSV，然後上傳到 Google Cloud Storage。
+    成功則返回 True，否則返回 False。
+    """
     try:
         df = pd.DataFrame(records)
-        df.to_csv(DATA_FILE, index=False)
+        csv_data = df.to_csv(index=False)
+        blob = bucket.blob(DATA_FILE)
+        blob.upload_from_string(csv_data, content_type="text/csv")
         return True
     except Exception as e:
         print("Error saving records:", e)
