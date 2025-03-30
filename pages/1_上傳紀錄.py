@@ -4,6 +4,23 @@ import requests
 import base64
 from common import upload_file_to_gcs, load_records, save_records, remove_record_by_date
 
+# ---------------- 密碼鎖 ----------------
+PASSWORD = "admindin"  # 替換成你的密碼
+
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+
+if not st.session_state.authenticated:
+    password_input = st.text_input("請輸入密碼", type="password")
+    if st.button("提交密碼"):
+        if password_input == PASSWORD:
+            st.session_state.authenticated = True
+            st.success("密碼正確，歡迎進入！")
+            st.experimental_rerun()
+        else:
+            st.error("密碼錯誤")
+    st.stop()
+
 # 設定頁面為wide
 st.set_page_config(page_title="上傳紀錄", layout="wide")
 
