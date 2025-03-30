@@ -4,10 +4,9 @@ import requests
 import base64
 from common import upload_file_to_gcs, load_records, save_records, remove_record_by_date
 
-# 設定頁面為 wide
 st.set_page_config(page_title="上傳紀錄", layout="wide")
 
-# 背景圖片
+# 背景圖片設定
 def get_base64_from_url(url):
     response = requests.get(url)   
     if response.status_code == 200:
@@ -17,7 +16,6 @@ def get_base64_from_url(url):
 
 bg_url = "https://storage.googleapis.com/internet_health/upload_bg3.jpg"
 bg_image_base64 = get_base64_from_url(bg_url)
-
 if bg_image_base64:
     st.markdown(
         f"""
@@ -35,10 +33,50 @@ else:
 
 st.title("上傳紀錄")
 
-# 初始 daily_records
+# 初始化 daily_records
 st.session_state.setdefault("daily_records", load_records())
 
-# 先建立表單提交新紀錄，將資料暫存於 pending_record
+# 如果 pending_record 已存在，則顯示密碼表單
+if "pending_record" in st.session_state:
+    st.info("請輸入上傳密碼以確認上傳資料。")
+    with st.form("password_form"):
+        password_input = st.text_input("請輸入上傳密碼", type="password", key="upload_password")
+        password_submit = st.form_submit_button("確認上傳")
+    if password_submit:
+        st.write("密碼表單已提交")  # 除錯用
+        if password_input == "admindin":
+            st.write("密碼正確")  # 除錯用
+            record_date = st.session_state.pending_record["date"].date()
+            duplicate_index = None
+            for i, rec in enumerate(st.session_state.daily_records):
+                if rec["date"].date() == record_date:
+                    duplicate_index = i
+                    break
+            if duplicate_index is not None:
+                st.warning("該日期已有紀錄。將覆蓋舊紀錄。")
+                updated_records = remove_record_by_date(record_date, st.session_state.daily_records)
+                if updated_records is not None:
+                    st.session_state.daily_records = updated_records
+                    st.session_state.daily_records.append(st.session_state.pending_record)
+                    if save_records(st.session_state.daily_records):
+                        st.success("現有紀錄已被覆蓋！")
+                    else:
+                        st.error("儲存資料失敗。")
+                else:
+                    st.error("移除舊紀錄失敗。")
+            else:
+                st.session_state.daily_records.append(st.session_state.pending_record)
+                if save_records(st.session_state.daily_records):
+                    st.success("每日紀錄已提交，且圖片已上傳至 GCS！")
+                else:
+                    st.error("儲存資料失敗。")
+            # 清除 pending_record 以便未來重新提交
+            del st.session_state.pending_record
+        else:
+            st.error("密碼錯誤，請重試。")
+    st.stop()  # 當密碼表單呈現時，停止其他代碼執行
+
+# 若沒有 pending_record（也就是第一次提交表單），則顯示資料輸入表單
 with st.form("daily_form", clear_on_submit=True):
     record_date = st.date_input("紀錄日期", datetime.date.today())
     
@@ -61,7 +99,6 @@ with st.form("daily_form", clear_on_submit=True):
     
     record_datetime = datetime.datetime.combine(record_date, datetime.time(0, 0))
     
-    # 計算睡眠時數
     bed_datetime = datetime.datetime.combine(record_date, bed_time)
     wake_datetime = datetime.datetime.combine(record_date, wake_time)
     if wake_datetime <= bed_datetime:
@@ -108,38 +145,3 @@ if submit_daily:
     }
     st.session_state.pending_record = new_record
     st.info("請輸入上傳密碼以確認上傳資料。")
-
-    # 密碼確認表單
-    with st.form("password_form"):
-        # st.write((st.session_state.pending_record))
-        password_input = st.text_input("請輸入上傳密碼", type="password", key="upload_password")
-        password_submit = st.form_submit_button("確認上傳")
-    if password_submit:
-        st.write("密碼表單已提交")
-        if password_input == "admindin":
-            st.write("密碼正確")
-            duplicate_index = None
-            for i, rec in enumerate(st.session_state.daily_records):
-                if rec["date"].date() == record_date:
-                    duplicate_index = i
-                    break
-            if duplicate_index is not None:
-                st.warning("該日期已有紀錄。將覆蓋舊紀錄。")
-                updated_records = remove_record_by_date(record_date, st.session_state.daily_records)
-                if updated_records is not None:
-                    st.session_state.daily_records = updated_records
-                    st.session_state.daily_records.append(st.session_state.pending_record)
-                    if save_records(st.session_state.daily_records):
-                        st.success("現有紀錄已被覆蓋！")
-                    else:
-                        st.error("儲存資料失敗。")
-                else:
-                    st.error("移除舊紀錄失敗。")
-            else:
-                st.session_state.daily_records.append(st.session_state.pending_record)
-                if save_records(st.session_state.daily_records):
-                    st.success("每日紀錄已提交，且圖片已上傳至 GCS！")
-                else:
-                    st.error("儲存資料失敗。")
-        else:
-            st.error("密碼錯誤，請重試。")
