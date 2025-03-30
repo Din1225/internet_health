@@ -54,7 +54,7 @@ else:
 
 
 
-st.title("上傳紀錄")
+st.title("上傳紀錄111111111")
 
 # 初始daily_records
 st.session_state.setdefault("daily_records", load_records())
