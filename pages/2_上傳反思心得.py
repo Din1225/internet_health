@@ -2,6 +2,7 @@ import datetime
 import streamlit as st
 import pandas as pd
 from common import load_reflections, save_reflections
+import os
 
 st.set_page_config(page_title="上傳反思心得紀錄", layout="wide")
 st.title("上傳反思心得紀錄")
