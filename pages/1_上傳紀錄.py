@@ -114,7 +114,7 @@ if submit_daily:
 
 
 # 從環境變數中取得密碼
-UPLOAD_PASSWORD = os.getenv("UPLOAD_PASSWORD")
+UPLOAD_PASSWORD = st.secrets["UPLOAD_PASSWORD"]
 
 # 如果 pending_record 已存在，則顯示密碼表單
 if "pending_record" in st.session_state:
