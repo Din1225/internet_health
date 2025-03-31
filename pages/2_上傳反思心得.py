@@ -20,6 +20,7 @@ with st.form("reflection_form", clear_on_submit=True):
 
     refl_text = st.text_area("請輸入反思內容", help="每週僅有一筆反思紀錄，若已存在將被更新")
     refl_submit = st.form_submit_button("提交反思")
+    
 if refl_submit:
     # 將反思資料暫存，這裡以週的起始日期作為該筆紀錄的日期
     st.session_state.pending_reflection = {
@@ -28,35 +29,34 @@ if refl_submit:
     }
     st.info("反思紀錄已提交，請輸入密碼以確認上傳。")
 
-
-# ---------------- 密碼確認表單 ----------------
-if "pending_reflection" in st.session_state:
-    with st.form("password_form"):
-        password_input = st.text_input("請輸入上傳密碼", type="password", key="upload_password")
-        password_submit = st.form_submit_button("確認上傳")
-    if password_submit:
-        correct_password = st.secrets["UPLOAD_PASSWORD"]
-        if password_input == correct_password:
-            st.success("密碼正確，正在更新反思紀錄...")
-            records = load_reflections()
-            pending_date = st.session_state.pending_reflection["date"]
-            # 以 pending_date 計算該週的起始日期
-            pending_week_start = pd.to_datetime(pending_date).to_period("W").start_time.date()
-            updated = False
-            # 檢查是否已有本週反思紀錄
-            for rec in records:
-                rec_week_start = pd.to_datetime(rec["date"]).to_period("W").start_time.date()
-                if rec_week_start == pending_week_start:
-                    rec["reflection"] = st.session_state.pending_reflection["reflection"]
-                    updated = True
-                    break
-            if not updated:
-                records.append(st.session_state.pending_reflection)
-            if save_reflections(records):
-                st.success("反思紀錄已更新！")
+    # ---------------- 密碼確認表單 ----------------
+    if "pending_reflection" in st.session_state:
+        with st.form("password_form"):
+            password_input = st.text_input("請輸入上傳密碼", type="password", key="upload_password")
+            password_submit = st.form_submit_button("確認上傳")
+        if password_submit:
+            correct_password = st.secrets["UPLOAD_PASSWORD"]
+            if password_input == correct_password:
+                st.success("密碼正確，正在更新反思紀錄...")
+                records = load_reflections()
+                pending_date = st.session_state.pending_reflection["date"]
+                # 以 pending_date 計算該週的起始日期
+                pending_week_start = pd.to_datetime(pending_date).to_period("W").start_time.date()
+                updated = False
+                # 檢查是否已有本週反思紀錄
+                for rec in records:
+                    rec_week_start = pd.to_datetime(rec["date"]).to_period("W").start_time.date()
+                    if rec_week_start == pending_week_start:
+                        rec["reflection"] = st.session_state.pending_reflection["reflection"]
+                        updated = True
+                        break
+                if not updated:
+                    records.append(st.session_state.pending_reflection)
+                if save_reflections(records):
+                    st.success("反思紀錄已更新！")
+                else:
+                    st.error("更新反思紀錄失敗。")
+                del st.session_state.pending_reflection
             else:
-                st.error("更新反思紀錄失敗。")
-            del st.session_state.pending_reflection
-        else:
-            st.error("密碼錯誤，請重試。")
-    st.stop()
+                st.error("密碼錯誤，請重試。")
+        st.stop()
