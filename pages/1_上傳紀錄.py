@@ -88,7 +88,7 @@ with st.form("daily_form", clear_on_submit=True):
     steps_evidence = st.file_uploader("上傳步數證明照片", type=["png", "jpg", "jpeg"], key="steps_evidence")
 
     
-    submit_daily = st.form_submit_button("提交每日紀錄")
+    # submit_daily = st.form_submit_button("提交每日紀錄")
 
 # if submit_daily:
     
