@@ -152,4 +152,4 @@ if "pending_record" in st.session_state:
             del st.session_state.pending_record
         else:
             st.error("密碼錯誤，請重試。")
-    st.stop()  # 當密碼表單呈現時，停止其他代碼執行
+    # st.stop()  # 當密碼表單呈現時，停止其他代碼執行
