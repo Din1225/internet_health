@@ -119,6 +119,7 @@ if submit_daily:
         password_submit = st.form_submit_button("確認上傳")
     if password_submit:
         if password_input == st.secrets["UPLOAD_PASSWORD"]:
+            st.success("密碼正確")
             record_date_val = st.session_state.pending_record["date"].date()
             duplicate_index = None
             for i, rec in enumerate(st.session_state.daily_records):
