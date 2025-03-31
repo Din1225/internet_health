@@ -60,6 +60,7 @@ if "pending_reflection" in st.session_state:
             if not updated:
                 records.append(st.session_state.pending_reflection)
             if save_reflections(records):
+                st.write(records)
                 st.success("反思紀錄已更新！")
             else:
                 st.error("更新反思紀錄失敗。")
