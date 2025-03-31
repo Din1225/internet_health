@@ -35,7 +35,7 @@ if refl_submit:
         "reflection": refl_text
     }
     st.info("反思紀錄已提交，請輸入密碼以確認上傳。")
-    st.experimental_rerun()
+
 
 # ---------------- 密碼確認表單 ----------------
 if "pending_reflection" in st.session_state:
