@@ -70,21 +70,14 @@ with st.form("daily_form", clear_on_submit=True):
     sleep_evidence = st.file_uploader("上傳睡眠證明照片", type=["png", "jpg", "jpeg"], key="sleep_evidence")
     
     st.write("請上傳餐點照片與輸入食物描述：")
-    # 早餐
     breakfast_desc = st.text_input("早餐食物描述", key="breakfast_desc")
     breakfast_img = st.file_uploader("早餐照片", type=["png", "jpg", "jpeg"], key="breakfast")
     
-    # 午餐
     lunch_desc = st.text_input("午餐食物描述", key="lunch_desc")
     lunch_img = st.file_uploader("午餐照片", type=["png", "jpg", "jpeg"], key="lunch")
     
-    # 晚餐
     dinner_desc = st.text_input("晚餐食物描述", key="dinner_desc")
     dinner_img = st.file_uploader("晚餐照片", type=["png", "jpg", "jpeg"], key="dinner")
-    
-    # 新增：宵夜
-    late_night_desc = st.text_input("宵夜食物描述", key="late_night_desc")
-    late_night_img = st.file_uploader("宵夜照片", type=["png", "jpg", "jpeg"], key="late_night")
     
     sugary_drinks = st.number_input("當天含糖飲料數量", min_value=0, step=1, value=0, help="請輸入當天喝的含糖飲料數量")
     steps = st.number_input("今日步數", min_value=0, step=100, value=0)
@@ -103,8 +96,6 @@ if submit_daily:
         "lunch_desc": lunch_desc,
         "dinner": upload_file_to_gcs(dinner_img, record_date, "dinner"),
         "dinner_desc": dinner_desc,
-        "late_night": upload_file_to_gcs(late_night_img, record_date, "late_night"),
-        "late_night_desc": late_night_desc,
         "sugary_drinks": sugary_drinks,
         "steps": steps,
         "steps_evidence": upload_file_to_gcs(steps_evidence, record_date, "steps"),
@@ -117,12 +108,8 @@ if submit_daily:
     with st.form("password_form"):
         password_input = st.text_input("請輸入上傳密碼", type="password", key="upload_password")
         password_submit = st.form_submit_button("確認上傳")
-        st.write("密碼表單內部：", password_submit, password_input)
-    st.write("表單提交後：", password_submit, password_input)
-
     if password_submit:
         if password_input == st.secrets["UPLOAD_PASSWORD"]:
-            st.success("密碼正確")
             record_date_val = st.session_state.pending_record["date"].date()
             duplicate_index = None
             for i, rec in enumerate(st.session_state.daily_records):
