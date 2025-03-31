@@ -82,7 +82,7 @@ with st.form("daily_form", clear_on_submit=True):
     dinner_desc = st.text_input("晚餐食物描述", key="dinner_desc")
     dinner_img = st.file_uploader("晚餐照片", type=["png", "jpg", "jpeg"], key="dinner")
     
-    # 新增：宵夜（例如晚餐後的小點）
+    # 新增：宵夜
     late_night_desc = st.text_input("宵夜食物描述", key="late_night_desc")
     late_night_img = st.file_uploader("宵夜照片", type=["png", "jpg", "jpeg"], key="late_night")
     
@@ -117,6 +117,8 @@ if submit_daily:
     with st.form("password_form"):
         password_input = st.text_input("請輸入上傳密碼", type="password", key="upload_password")
         password_submit = st.form_submit_button("確認上傳")
+    # 用 st.write 除錯，檢查表單是否提交
+    st.write("password_submit:", password_submit, "password_input:", password_input)
     if password_submit:
         if password_input == st.secrets["UPLOAD_PASSWORD"]:
             st.success("密碼正確")
