@@ -117,8 +117,9 @@ if submit_daily:
     with st.form("password_form"):
         password_input = st.text_input("請輸入上傳密碼", type="password", key="upload_password")
         password_submit = st.form_submit_button("確認上傳")
-    # 用 st.write 除錯，檢查表單是否提交
-    st.write("password_submit:", password_submit, "password_input:", password_input)
+        st.write("密碼表單內部：", password_submit, password_input)
+    st.write("表單提交後：", password_submit, password_input)
+
     if password_submit:
         if password_input == st.secrets["UPLOAD_PASSWORD"]:
             st.success("密碼正確")
