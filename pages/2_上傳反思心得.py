@@ -2,7 +2,7 @@ import datetime
 import streamlit as st
 import pandas as pd
 from common import load_reflections, save_reflections
-import os
+
 
 st.set_page_config(page_title="上傳反思心得紀錄", layout="wide")
 st.title("上傳反思心得紀錄")
@@ -35,7 +35,7 @@ if refl_submit:
 # ---------------- 密碼確認表單 ----------------
 
 # 從環境變數中取得密碼
-UPLOAD_PASSWORD = os.getenv("UPLOAD_PASSWORD")
+UPLOAD_PASSWORD = st.secrets["UPLOAD_PASSWORD"]
 
 # 如果 pending_record 已存在，則顯示密碼表單
 if "pending_reflection" in st.session_state:
