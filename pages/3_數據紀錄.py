@@ -1,7 +1,7 @@
 import streamlit as st 
 import pandas as pd
 from datetime import datetime, timedelta
-from common import load_records
+from common import load_records, load_reflections
 
 st.set_page_config(page_title="數據紀錄", layout="wide")
 st.title("數據紀錄")
@@ -73,3 +73,19 @@ else:
         avg_cols[3].write(f"{avg_sugary:.1f}")
         avg_cols[4].write(f"{avg_steps:.0f}")
         st.markdown("---")
+
+        # ---------------- 新增：顯示本週反思心得 ----------------
+        # 載入反思紀錄（反思紀錄儲存在 reflection_records.csv 中）
+        weekly_reflections = load_reflections()
+        reflection_text = ""
+        # 以週的起始日期為比對依據
+        for ref in weekly_reflections:
+            ref_week = pd.to_datetime(ref["date"]).to_period("W").start_time.date()
+            # week 為 Timestamp，使用 week.date() 轉換成 date
+            if ref_week == week.date():
+                reflection_text = ref.get("reflection", "")
+                break
+        if reflection_text:
+            st.markdown(f"**本週反思：** {reflection_text}")
+        else:
+            st.markdown("**本週反思：** 無")

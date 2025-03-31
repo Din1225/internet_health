@@ -20,7 +20,7 @@ with st.form("reflection_form", clear_on_submit=True):
     week_end = week_start + datetime.timedelta(days=6)
 
     refl_text = st.text_area("請輸入反思內容", help="每週僅有一筆反思紀錄，若已存在將被更新")
-    refl_submit = st.form_submit_button("提交反思")
+    refl_submit = st.form_submit_button("確認輸入完畢")
 
 
 
@@ -71,4 +71,4 @@ if "pending_reflection" in st.session_state:
             del st.session_state.pending_reflection
         else:
             st.error("密碼錯誤，請重試。")
-    # st.stop()
+    st.stop()
