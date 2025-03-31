@@ -46,6 +46,7 @@ if "pending_reflection" in st.session_state:
         if password_input == UPLOAD_PASSWORD:
             st.success("密碼正確，正在更新反思紀錄...")
             records = load_reflections()
+            st.write(f"old: {records}")
             pending_date = st.session_state.pending_reflection["date"]
             # 以 pending_date 計算該週的起始日期
             pending_week_start = pd.to_datetime(pending_date).to_period("W").start_time.date()
@@ -60,7 +61,7 @@ if "pending_reflection" in st.session_state:
             if not updated:
                 records.append(st.session_state.pending_reflection)
             if save_reflections(records):
-                st.write(records)
+                st.write(f"new: {records}")
                 st.success("反思紀錄已更新！")
             else:
                 st.error("更新反思紀錄失敗。")
