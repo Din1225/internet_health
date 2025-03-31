@@ -8,7 +8,8 @@ st.set_page_config(page_title="上傳反思心得紀錄", layout="wide")
 st.title("上傳反思心得紀錄")
 
 # 讀取現有反思紀錄
-existing_reflections = load_reflections()
+# 初始化 reflection_records
+st.session_state.setdefault("reflection_records", load_reflections())
 
 # ---------------- 反思輸入表單 ----------------
 with st.form("reflection_form", clear_on_submit=True):
