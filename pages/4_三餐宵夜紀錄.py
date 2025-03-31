@@ -3,8 +3,8 @@ import pandas as pd
 from datetime import datetime, timedelta
 from common import load_records
 
-st.set_page_config(page_title="三餐宵夜紀錄展示", layout="wide")
-st.title("三餐宵夜紀錄展示")
+st.set_page_config(page_title="三餐宵夜照片紀錄", layout="wide")
+st.title("三餐宵夜照片紀錄")
 
 # 刷新按鈕：更新 session state 中的 daily_records
 if st.button("刷新資料"):
