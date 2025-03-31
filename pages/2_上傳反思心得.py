@@ -17,16 +17,8 @@ with st.form("reflection_form", clear_on_submit=True):
     week_start = pd.to_datetime(refl_date).to_period("W").start_time.date()
     week_end = week_start + datetime.timedelta(days=6)
 
-    
-    # 檢查該週是否已有反思紀錄，若有則預填反思內容
-    existing_reflection_text = ""
-    for rec in existing_reflections:
-        rec_week_start = pd.to_datetime(rec["date"]).to_period("W").start_time.date()
-        if rec_week_start == week_start:
-            existing_reflection_text = rec.get("reflection", "")
-            break
 
-    refl_text = st.text_area("請輸入反思內容", value=existing_reflection_text, help="每週僅有一筆反思紀錄，若已存在將被更新")
+    refl_text = st.text_area("請輸入反思內容", help="每週僅有一筆反思紀錄，若已存在將被更新")
     refl_submit = st.form_submit_button("提交反思")
 if refl_submit:
     # 將反思資料暫存，這裡以週的起始日期作為該筆紀錄的日期
