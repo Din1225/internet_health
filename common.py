@@ -4,10 +4,10 @@ import datetime
 import pandas as pd
 from google.cloud import storage
 from io import StringIO
-import streamlit as st
 
 # 嘗試從 st.secrets 中讀取憑證內容（僅在 Streamlit Cloud 環境中有效）
 try:
+    import streamlit as st
     if "GCP_CREDENTIALS" in st.secrets:
         with open("/tmp/credentials.json", "w") as f:
             f.write(st.secrets["GCP_CREDENTIALS"])
