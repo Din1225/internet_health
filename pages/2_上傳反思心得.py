@@ -3,8 +3,8 @@ import streamlit as st
 import pandas as pd
 from common import load_reflections, save_reflections
 
-st.set_page_config(page_title="反思紀錄", layout="wide")
-st.title("反思紀錄 (新增/更新)")
+st.set_page_config(page_title="上傳反思心得紀錄", layout="wide")
+st.title("上傳反思心得紀錄")
 
 # 讀取現有反思紀錄
 existing_reflections = load_reflections()
@@ -16,7 +16,7 @@ with st.form("reflection_form", clear_on_submit=True):
     # 根據使用者選擇的日期，計算該週的起始與結束日期（以週一為起點）
     week_start = pd.to_datetime(refl_date).to_period("W").start_time.date()
     week_end = week_start + datetime.timedelta(days=6)
-    st.markdown(f"**所選反思週：{week_start} ~ {week_end}**")
+
     
     # 檢查該週是否已有反思紀錄，若有則預填反思內容
     existing_reflection_text = ""
