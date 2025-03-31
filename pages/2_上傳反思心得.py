@@ -3,8 +3,8 @@ import streamlit as st
 import pandas as pd
 from common import load_reflections, save_reflections
 
-st.set_page_config(page_title="反思紀錄", layout="wide")
-st.title("反思紀錄 (新增/更新)")
+st.set_page_config(page_title="上傳反思紀錄", layout="wide")
+st.title("上傳反思紀錄")
 
 
 # 取得今天的日期，並計算本週的起始與結束日期
