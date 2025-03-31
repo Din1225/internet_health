@@ -7,7 +7,7 @@ from common import load_reflections, save_reflections
 st.set_page_config(page_title="上傳反思心得紀錄", layout="wide")
 st.title("上傳反思心得紀錄")
 
-# 讀取現有反思紀錄
+
 # 初始化 reflection_records
 st.session_state.setdefault("reflection_records", load_reflections())
 
@@ -19,20 +19,22 @@ with st.form("reflection_form", clear_on_submit=True):
     week_start = pd.to_datetime(refl_date).to_period("W").start_time.date()
     week_end = week_start + datetime.timedelta(days=6)
 
-
     refl_text = st.text_area("請輸入反思內容", help="每週僅有一筆反思紀錄，若已存在將被更新")
     refl_submit = st.form_submit_button("提交反思")
 
+
+
 if refl_submit:
-    # 將反思資料暫存，這裡以週的起始日期作為該筆紀錄的日期
-    st.session_state.pending_reflection = {
+    new_record ={
         "date": datetime.datetime.combine(week_start, datetime.time(0, 0)),
         "reflection": refl_text
     }
-    st.info("反思紀錄已提交，請輸入密碼以確認上傳。")
+    # 將反思資料暫存，這裡以週的起始日期作為該筆紀錄的日期
+    st.session_state.pending_reflection = new_record
+    st.info("請輸入密碼以確認上傳反思紀錄。")
 
 
-# ---------------- 密碼確認表單 ----------------
+# ---------------- 密碼確認 ----------------
 
 # 從環境變數中取得密碼
 UPLOAD_PASSWORD = st.secrets["UPLOAD_PASSWORD"]
@@ -61,6 +63,7 @@ if "pending_reflection" in st.session_state:
             if not updated:
                 records.append(st.session_state.pending_reflection)
             if save_reflections(records):
+                records = load_reflections()
                 st.write(f"new: {records}")
                 st.success("反思紀錄已更新！")
             else:
